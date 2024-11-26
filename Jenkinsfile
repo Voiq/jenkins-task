@@ -14,7 +14,7 @@ pipeline{
       steps{
         script{
           echo "Running on agent: ${env.NODE_NAME}"
-          sh 'hostname is $(hostname)'
+          sh 'echo "hostname is $(hostname)"'
         }
       }
     }
