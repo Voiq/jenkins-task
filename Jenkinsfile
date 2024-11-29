@@ -3,10 +3,15 @@ pipeline{
     label 'agent1'
   }
   stages{
-    stage('stage1'){
+    stage('Build'){
       steps{
-        script{
-          echo "Current branch: ${env.GIT_BRANCH}"
+        sh """
+          ./mvnw package
+          docker build -t voidedflesh/petclinic-image dockerfile
+          docker tag voidedflesh/petclinic-image:v1
+          docker push voidedflesh/petclinic-image:v1
+
+        """
         }
       }
     }
@@ -18,5 +23,4 @@ pipeline{
         }
       }
     }
-  }
 }
