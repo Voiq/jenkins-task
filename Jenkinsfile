@@ -15,12 +15,4 @@ pipeline{
         }
       }
     }
-    stage('stage2'){
-      steps{
-        script{
-          echo "Running on agent: ${env.NODE_NAME}"
-          sh 'echo "hostname is $(hostname)"'
-        }
-      }
-    }
-}
+   }
