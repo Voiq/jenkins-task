@@ -2,17 +2,32 @@ pipeline{
   agent{
     label 'agent1'
   }
+  environment{
+    DOCKERHUB_CREDENTIALS = credentials('DockerHub')
+  }
   stages{
     stage('Build'){
       steps{
         sh """
           ./mvnw package
-          docker build -t voidedflesh/petclinic-image dockerfile
-          docker tag voidedflesh/petclinic-image:v1
-          docker push voidedflesh/petclinic-image:v1
-
+          docker build -t voidedflesh/petclinic-image:v1 .
         """
-        }
+        }   
+      }
+    stage('Login'){
+      steps{
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
     }
-   }
+    stage('Push'){
+      steps{
+        sh 'docker push voidedflesh/petclinic-image:v1'
+      }
+    }
+    }
+  post{
+    always{
+      sh 'docker logout'
+    }
+  }
+}
