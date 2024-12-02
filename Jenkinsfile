@@ -30,10 +30,6 @@ pipeline{
         sh 'docker push voidedflesh/petclinic-image:latest' 
        }
       }}
-  post{
-    always{
-      sh 'docker logout'
-    }
-  }
+
 }
 }
