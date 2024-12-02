@@ -6,20 +6,9 @@ pipeline{
     DOCKERHUB_CREDENTIALS = credentials('dockerhub')
   }
   stages{
-    stage('Maven Install'){
-      steps{
-        script{
-          docker.image('maven:3.9.7').inside{
-            sh 'mvn clean install'
-          }
-        }
-
-        }
        
-      }
     stage('Docker build'){
       steps{
-        sh './mvnw package'
         sh 'docker build -t voidedflesh/petclinic-image:latest'
         }
       }
