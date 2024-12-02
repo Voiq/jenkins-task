@@ -6,29 +6,32 @@ pipeline{
     DOCKERHUB_CREDENTIALS = credentials('DockerHub')
   }
   stages{
-    stage('Build'){
+    stage('Maven Install'){
+      agent{
+        docker{
+          image maven:3.5.0
+          }
+        }
       steps{
-        sh """
-          ./mvnw package
-          
-          docker build -t voidedflesh/petclinic-image:v1 .
-        """
-        }   
+        sh 'mvn clean install'
+        } 
       }
-    stage('Login'){
+    stage('Docker build'){
       steps{
-        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        sh 'docker build -t voidedflesh/petclinic-image:latest'
+        }
       }
-    }
-    stage('Push'){
+    stage('Docker Push'){
       steps{
-        sh 'docker push voidedflesh/petclinic-image:v1'
-      }
-    }
-    }
+        withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'DockerHubPassword', usernameVariable: 'DockerHubUser')]) {
+        sh "docker login -u ${env.DockerHubUser} -p ${env.DockerHubPassword}"
+        sh 'docker push voidedflesh/petclinic-image:latest' 
+       }
+      }}
   post{
     always{
       sh 'docker logout'
     }
   }
+}
 }
