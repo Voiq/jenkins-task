@@ -19,6 +19,11 @@ pipeline{
         sh 'docker push voidedflesh/petclinic-image:latest' 
        }
       }}
+    stage('Docker Compose'){
+      steps{
+        sh 'docker-compose up'
+      }
+    }  
 
 }
 }
