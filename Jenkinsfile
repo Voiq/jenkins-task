@@ -3,28 +3,30 @@ pipeline{
     label 'agent1'
   }
   environment{
-    DOCKERHUB_CREDENTIALS = credentials('DockerHub')
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
   }
   stages{
     stage('Maven Install'){
-      agent{
-        docker{
-          image maven:3.5.0
+      steps{
+        script{
+          docker.image('maven:3.8.3-openjdk-17').inside{
+            sh 'mvn clean install'
           }
         }
-      steps{
-        sh 'mvn clean install'
-        } 
+
+        }
+       
       }
     stage('Docker build'){
       steps{
+        sh './mvnw package'
         sh 'docker build -t voidedflesh/petclinic-image:latest'
         }
       }
     stage('Docker Push'){
       steps{
-        withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'DockerHubPassword', usernameVariable: 'DockerHubUser')]) {
-        sh "docker login -u ${env.DockerHubUser} -p ${env.DockerHubPassword}"
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerhubPassword', usernameVariable: 'dockerhubUser')]) {
+        sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPassword}"
         sh 'docker push voidedflesh/petclinic-image:latest' 
        }
       }}
