@@ -9,7 +9,7 @@ pipeline{
     stage('Maven Install'){
       steps{
         script{
-          docker.image('maven:3.9.7-openjdk-17').inside{
+          docker.image('maven:3.9.7').inside{
             sh 'mvn clean install'
           }
         }
