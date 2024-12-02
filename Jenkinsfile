@@ -9,7 +9,7 @@ pipeline{
        
     stage('Docker build'){
       steps{
-        sh 'docker build -t voidedflesh/petclinic-image:latest.'
+        sh 'docker build -t voidedflesh/petclinic-image'
         }
       }
     stage('Docker Push'){
