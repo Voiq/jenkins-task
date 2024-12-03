@@ -1,8 +1,7 @@
 FROM maven:3.8.5-openjdk-17 AS build-stage
 WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY . .
+RUN ./mvnw package
 
 #second stage
 FROM openjdk:17-jdk-slim
